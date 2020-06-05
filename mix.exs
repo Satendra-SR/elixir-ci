@@ -60,7 +60,7 @@ defmodule Glific.MixProject do
       {:pow, "~> 1.0.20"},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.22", only: [[:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.22", only: [:dev, :test], runtime: false},
       {:inch_ex, "~> 2.0", only: [:dev, :test], runtime: false},
       {:doctor, "~> 0.13.0"},
       {:httpoison, "~> 1.6"},
