@@ -45,23 +45,22 @@ jobs:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
 
-      # - name: Retrieve Mix Dependencies Cache
-      #   uses: actions/cache@v1
-      #   id: elixir-mix-cache #id to use in retrieve action
-      #   with:
-      #     path: deps
-      #     key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@v1
+        id: elixir-mix-cache #id to use in retrieve action
+        with:
+          path: deps
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
       - name: Install Mix Dependencies if not Cached
-        # if: steps.elixir-mix-cache.outputs.cache-hit != 'true'
-        # run: |
-        run:  mix local.rebar --force
+        if: steps.elixir-mix-cache.outputs.cache-hit != 'true'
+        run: |
+          mix local.rebar --force
           mix local.hex --force
           mix deps.get
 
       # - name: Run Test
       #   run: mix test
-
 
       - name: Run check
         run: mix check
