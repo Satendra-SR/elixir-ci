@@ -20,16 +20,12 @@ jobs:
         ports:
         - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-        # --health-cmd: Command to run to check health
-        # pg_isready: to check if database is
-        # --health-interval: Time between running the check (ms|s|m|h) (default 0s)
-        # --health-timeout: Maximum time to allow one check to run (ms|s|m|h) (default 0s)
-        # --health-retries: Consecutive failures needed to report unhealthy
 
     env:
       MIX_ENV: test
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      
     strategy:
       matrix:  # build matrix for the job
         elixir: [1.10.2]
