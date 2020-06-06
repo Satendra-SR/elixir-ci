@@ -55,8 +55,8 @@ jobs:
           mix local.hex --force
           mix deps.get
 
-      - name: Run check
-        run: mix check
+      # - name: Run check
+      #   run: mix check
 
       - name: Retrieve PLT Cache
         uses: actions/cache@v1
@@ -70,6 +70,9 @@ jobs:
         run: |
           mkdir -p priv/plts
           mix dialyzer --plt
+
+      - name: Compile
+        run: mix compile
           
       - name: Run dialyzer
         run: mix dialyzer --no-check --halt-exit-status
