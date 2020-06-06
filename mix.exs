@@ -99,4 +99,19 @@ defmodule Glific.MixProject do
       "test.nodrop": ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
+
+  def project do
+    [
+      # ...
+      dialyzer: dialyzer(),
+      # ...
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_core_path: "priv/plts",
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+    ]
+  end
 end
