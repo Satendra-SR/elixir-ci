@@ -8,7 +8,10 @@ defmodule Glific.MixProject do
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       dialyzer: [
-        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+        # plt_add_apps: [:ex_unit],
+        # check_plt: true,
+        ignore_warnings: "dialyzer_ignore.exs"
       ],
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
