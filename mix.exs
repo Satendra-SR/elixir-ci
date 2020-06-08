@@ -11,7 +11,7 @@ defmodule Glific.MixProject do
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
         # plt_add_apps: [:ex_unit],
         # check_plt: true,
-        ignore_warnings: "dialyzer_ignore.exs"
+        ignore_warnings: ".dialyzer_ignore.exs"
       ],
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
