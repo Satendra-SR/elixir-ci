@@ -4,8 +4,10 @@ defmodule Glific.Seeds do
   """
   alias Glific.{
     Contacts.Contact,
-    Partners.BSP,
+    Messages.Message,
+    Messages.MessageMedia,
     Partners.Organization,
+    Partners.Provider,
     Repo,
     Settings.Language,
     Tags.Tag
@@ -34,16 +36,42 @@ defmodule Glific.Seeds do
 
   @doc false
   @spec seed_tag({Language.t(), Language.t()}) :: nil
-  def seed_tag({en_us, hi_in}) do
-    message_tags_en = Repo.insert!(%Tag{label: "Messages", language: en_us})
-    message_tags_hi = Repo.insert!(%Tag{label: "Messages", language: hi_in})
+  def seed_tag({en_us, _hi_in}) do
+    message_tags_mt = Repo.insert!(%Tag{label: "Messages", language: en_us})
+    message_tags_ct = Repo.insert!(%Tag{label: "Contacts", language: en_us})
 
-    Repo.insert!(%Tag{label: "Welcome", language: en_us, parent_id: message_tags_en.id})
-    Repo.insert!(%Tag{label: "Greeting", language: en_us, parent_id: message_tags_en.id})
-    Repo.insert!(%Tag{label: "Thank You", language: en_us, parent_id: message_tags_en.id})
-    Repo.insert!(%Tag{label: "Welcome", language: hi_in, parent_id: message_tags_hi.id})
-    Repo.insert!(%Tag{label: "Greeting", language: hi_in, parent_id: message_tags_hi.id})
-    Repo.insert!(%Tag{label: "Thank You", language: hi_in, parent_id: message_tags_hi.id})
+    tags = [
+      # Intent of message
+      %{label: "Compliments", language_id: en_us.id, parent_id: message_tags_mt.id},
+      %{label: "Good Bye", language_id: en_us.id, parent_id: message_tags_mt.id},
+      %{label: "Greeting", language_id: en_us.id, parent_id: message_tags_mt.id},
+      %{label: "Thank You", language_id: en_us.id, parent_id: message_tags_mt.id},
+      %{label: "Welcome", language_id: en_us.id, parent_id: message_tags_mt.id},
+
+      # Status of Message
+      %{label: "Critical", language_id: en_us.id, parent_id: message_tags_mt.id},
+      %{label: "Important", language_id: en_us.id, parent_id: message_tags_mt.id},
+      %{label: "Read", language_id: en_us.id, parent_id: message_tags_mt.id},
+      %{label: "Spam", language_id: en_us.id, parent_id: message_tags_mt.id},
+
+      # Type of Contact
+      %{label: "Child", language_id: en_us.id, parent_id: message_tags_ct.id},
+      %{label: "Parent", language_id: en_us.id, parent_id: message_tags_ct.id},
+      %{label: "Participant", language_id: en_us.id, parent_id: message_tags_ct.id},
+      %{label: "User", language_id: en_us.id, parent_id: message_tags_ct.id}
+    ]
+
+    inserted_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    tag_entries =
+      for tag_entry <- tags do
+        Map.put(tag_entry, :is_reserved, true)
+        |> Map.put(:inserted_at, inserted_time)
+        |> Map.put(:updated_at, inserted_time)
+      end
+
+    # seed tags
+    Repo.insert_all(Tag, tag_entries)
 
     Repo.insert!(%Tag{label: "This is for testing", language: en_us})
   end
@@ -51,49 +79,175 @@ defmodule Glific.Seeds do
   @doc false
   @spec seed_contacts :: nil
   def seed_contacts do
-    Repo.insert!(%Contact{phone: "917834811114", name: "Default Contact"})
+    contacts = [
+      %{phone: "917834811114", name: "Default Sender"},
+      %{phone: "917834811231", name: "Default receiver"},
+      %{
+        name: "Adelle Cavin",
+        phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
+      },
+      %{
+        name: "Margarita Quinteros",
+        phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
+      },
+      %{
+        name: "Chrissy Cron",
+        phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
+      },
+      %{
+        name: "Hailey Wardlaw",
+        phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
+      }
+    ]
 
-    Repo.insert!(%Contact{
-      name: "Adelle Cavin",
-      phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
-    })
+    inserted_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
-    Repo.insert!(%Contact{
-      name: "Margarita Quinteros",
-      phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
-    })
+    contact_entries =
+      for contact_entry <- contacts do
+        contact_entry
+        |> Map.put(:inserted_at, inserted_time)
+        |> Map.put(:updated_at, inserted_time)
+      end
 
-    Repo.insert!(%Contact{
-      name: "Chrissy Cron",
-      phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
-    })
+    # seed contacts
+    Repo.insert_all(Contact, contact_entries)
 
-    Repo.insert!(%Contact{
-      name: "Hailey Wardlaw",
-      phone: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
-    })
+    nil
   end
 
   @doc false
-  @spec seed_bsp :: nil
-  def seed_bsp do
-    Repo.insert!(%BSP{
+  @spec seed_providers :: {Provider.t()}
+  def seed_providers do
+    default_provider =
+      Repo.insert!(%Provider{
+        name: "Default Provider",
+        url: "test_url",
+        api_end_point: "test"
+      })
+
+    Repo.insert!(%Provider{
       name: "gupshup",
-      url: "test_url",
+      url: "test_url_1",
       api_end_point: "test"
     })
+
+    Repo.insert!(%Provider{
+      name: "twilio",
+      url: "test_url_2",
+      api_end_point: "test"
+    })
+
+    {default_provider}
   end
 
   @doc false
-  @spec seed_organizations :: nil
-  def seed_organizations do
+  @spec seed_organizations({Provider.t()}) :: nil
+  def seed_organizations({default_provider}) do
+    Repo.insert!(%Organization{
+      name: "Default Organization",
+      display_name: "Default Organization",
+      contact_name: "Test",
+      email: "test@glific.org",
+      provider_id: default_provider.id,
+      provider_key: "random",
+      provider_number: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
+    })
+
     Repo.insert!(%Organization{
       name: "Slam Out Loud",
+      display_name: "Slam Out Loud",
       contact_name: "Jigyasa and Gaurav",
       email: "jigyasa@glific.org",
-      bsp_id: 1,
-      bsp_key: "random",
-      wa_number: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
+      provider_id: default_provider.id,
+      provider_key: "random",
+      provider_number: Integer.to_string(Enum.random(123_456_789..9_876_543_210))
+    })
+  end
+
+  @doc false
+  @spec seed_messages :: nil
+  def seed_messages do
+    {:ok, sender} = Repo.fetch_by(Contact, %{name: "Default Sender"})
+    {:ok, receiver} = Repo.fetch_by(Contact, %{name: "Default receiver"})
+
+    Repo.insert!(%Message{
+      body: "default message body",
+      flow: :inbound,
+      type: :text,
+      provider_message_id: Faker.String.base64(10),
+      provider_status: :enqueued,
+      sender_id: sender.id,
+      receiver_id: receiver.id,
+      contact_id: receiver.id
+    })
+
+    Repo.insert!(%Message{
+      body: Faker.Lorem.sentence(),
+      flow: :inbound,
+      type: :text,
+      provider_message_id: Faker.String.base64(10),
+      provider_status: :enqueued,
+      sender_id: sender.id,
+      receiver_id: receiver.id,
+      contact_id: receiver.id
+    })
+
+    Repo.insert!(%Message{
+      body: Faker.Lorem.sentence(),
+      flow: :inbound,
+      type: :text,
+      provider_message_id: Faker.String.base64(10),
+      provider_status: :enqueued,
+      sender_id: sender.id,
+      receiver_id: receiver.id,
+      contact_id: receiver.id
+    })
+
+    Repo.insert!(%Message{
+      body: Faker.Lorem.sentence(),
+      flow: :inbound,
+      type: :text,
+      provider_message_id: Faker.String.base64(10),
+      provider_status: :enqueued,
+      sender_id: sender.id,
+      receiver_id: receiver.id,
+      contact_id: receiver.id
+    })
+  end
+
+  @doc false
+  @spec seed_messages_media :: nil
+  def seed_messages_media do
+    Repo.insert!(%MessageMedia{
+      url: Faker.Avatar.image_url(),
+      source_url: Faker.Avatar.image_url(),
+      thumbnail: Faker.Avatar.image_url(),
+      caption: "default caption",
+      provider_media_id: Faker.String.base64(10)
+    })
+
+    Repo.insert!(%MessageMedia{
+      url: Faker.Avatar.image_url(),
+      source_url: Faker.Avatar.image_url(),
+      thumbnail: Faker.Avatar.image_url(),
+      caption: Faker.String.base64(10),
+      provider_media_id: Faker.String.base64(10)
+    })
+
+    Repo.insert!(%MessageMedia{
+      url: Faker.Avatar.image_url(),
+      source_url: Faker.Avatar.image_url(),
+      thumbnail: Faker.Avatar.image_url(),
+      caption: Faker.String.base64(10),
+      provider_media_id: Faker.String.base64(10)
+    })
+
+    Repo.insert!(%MessageMedia{
+      url: Faker.Avatar.image_url(),
+      source_url: Faker.Avatar.image_url(),
+      thumbnail: Faker.Avatar.image_url(),
+      caption: Faker.String.base64(10),
+      provider_media_id: Faker.String.base64(10)
     })
   end
 
@@ -109,8 +263,12 @@ defmodule Glific.Seeds do
 
     seed_contacts()
 
-    seed_bsp()
+    {default_provider} = seed_providers()
 
-    seed_organizations()
+    seed_organizations({default_provider})
+
+    seed_messages()
+
+    seed_messages_media()
   end
 end

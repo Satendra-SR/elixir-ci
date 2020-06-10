@@ -9,8 +9,6 @@ defmodule Glific.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
-        # plt_add_apps: [:ex_unit],
-        # check_plt: true,
         ignore_warnings: ".dialyzer_ignore.exs"
       ],
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -19,7 +17,8 @@ defmodule Glific.MixProject do
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
-        "test.drop": :test
+        "test.nodrop": :test,
+        coveralls: :test
       ]
     ]
   end
@@ -47,7 +46,7 @@ defmodule Glific.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_view, "~> 0.12.0"},
+      {:phoenix_live_view, "~> 0.13.0"},
       {:floki, ">= 0.0.0", only: :test},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -98,9 +97,8 @@ defmodule Glific.MixProject do
       reset: ["deps.get", "compile", "ecto.reset", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.drop", "ecto.create --quiet", "ecto.migrate", "test"],
-      "test.nodrop": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.drop", "ecto.create --quiet", "ecto.migrate", "test"]
+      # test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
-
 end

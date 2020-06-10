@@ -4,7 +4,9 @@ defmodule GlificWeb.Schema.ContactTypes do
   """
 
   use Absinthe.Schema.Notation
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
+  alias Glific.Repo
   alias GlificWeb.Resolvers
 
   object :contact_result do
@@ -18,10 +20,14 @@ defmodule GlificWeb.Schema.ContactTypes do
     field :phone, :string
 
     field :status, :contact_status_enum
-    field :wa_status, :contact_status_enum
+    field :provider_status, :contact_status_enum
 
     field :optin_time, :datetime
     field :optout_time, :datetime
+
+    field :tags, list_of(:tag) do
+      resolve(dataloader(Repo))
+    end
   end
 
   @desc "Filtering options for contacts"
@@ -34,14 +40,14 @@ defmodule GlificWeb.Schema.ContactTypes do
 
     @desc "Match the status"
     field :status, :contact_status_enum
-    field :wa_status, :contact_status_enum
+    field :provider_status, :contact_status_enum
   end
 
   input_object :contact_input do
     field :name, :string
     field :phone, :string
     field :status, :contact_status_enum
-    field :wa_status, :contact_status_enum
+    field :provider_status, :contact_status_enum
   end
 
   object :contact_queries do
@@ -56,6 +62,12 @@ defmodule GlificWeb.Schema.ContactTypes do
       arg(:filter, :contact_filter)
       arg(:order, type: :sort_order, default_value: :asc)
       resolve(&Resolvers.Contacts.contacts/3)
+    end
+
+    field :search, list_of(:contact) do
+      arg(:term, non_null(:string))
+      arg(:order, type: :sort_order, default_value: :asc)
+      resolve(&Resolvers.Contacts.search/3)
     end
   end
 
