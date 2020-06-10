@@ -1,5 +1,17 @@
 # Glific - Two Way Open Source Communication Platform
 
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+![CI](https://img.shields.io/github/workflow/status/glific/glific/continuous-integration?label=CI&logo=github&style=flat-square)
+
+[![Hex version badge](https://img.shields.io/hexpm/v/repo_example.svg)](https://hex.pm/packages/repo_example)
+
+[![License badge](https://img.shields.io/hexpm/l/repo_example.svg)](https://github.com/surgeventures/repo-example-elixir/blob/master/LICENSE.md)
+
+[![codecov.io](http://codecov.io/github/mirumee/saleor/coverage.svg?branch=master)](http://codecov.io/github/mirumee/saleor?branch=master)
+
+[![Code coverage badge](https://img.shields.io/codecov/c/github/satendra-sr/elixir-ci/master.svg)](https://codecov.io/gh/satendra-sr/elixir-ci/branch/master)
+
 ## Packages Needed
 
 Install the following packages using your favorite package manager. Links are provided for some
