@@ -10,7 +10,7 @@
 
 [![codecov.io](http://codecov.io/github/mirumee/saleor/coverage.svg?branch=master)](http://codecov.io/github/mirumee/saleor?branch=master)
 
-[![Code coverage badge](https://img.shields.io/codecov/c/github/satendra-sr/elixir-ci/master.svg)](https://codecov.io/gh/satendra-sr/elixir-ci/branch/feature/badges)
+[![Code coverage badge](https://img.shields.io/codecov/c/github/satendra-sr/elixir-ci/master.svg)](https://codecov.io/gh/satendra-sr/elixir-ci/branch/master)
 
 ## Packages Needed
 
