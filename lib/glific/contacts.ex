@@ -2,11 +2,9 @@ defmodule Glific.Contacts do
   @moduledoc """
   The Contacts context.
   """
-
   import Ecto.Query, warn: false
-  alias Glific.Repo
 
-  alias Glific.Contacts.Contact
+  alias Glific.{Contacts.Contact, Repo, Search.Full}
 
   @doc """
   Returns the list of contacts.
@@ -42,8 +40,8 @@ defmodule Glific.Contacts do
       {:status, status}, query ->
         from q in query, where: q.status == ^status
 
-      {:wa_status, wa_status}, query ->
-        from q in query, where: q.wa_status == ^wa_status
+      {:provider_status, provider_status}, query ->
+        from q in query, where: q.provider_status == ^provider_status
     end)
   end
 
@@ -144,5 +142,17 @@ defmodule Glific.Contacts do
       on_conflict: [set: [phone: attrs.phone]],
       conflict_target: :phone
     )
+  end
+
+  @doc """
+  Full text search interface via Postgres
+  """
+  @spec search(String.t()) :: [Contact.t()]
+  def search(term) do
+    query = from(c in Contact)
+
+    query
+    |> Full.run(term)
+    |> Repo.all()
   end
 end

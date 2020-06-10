@@ -7,12 +7,13 @@ defmodule Glific.Tags.Tag do
   import Ecto.Changeset
 
   alias Glific.{Settings.Language, Tags.Tag}
-  # , Contacts.Contact, Messages.Message}
+  alias Glific.{Contacts.Contact, Messages.Message}
 
   @required_fields [:label, :language_id]
   @optional_fields [:description, :is_active, :is_reserved, :parent_id]
 
   @type t() :: %__MODULE__{
+          __meta__: Ecto.Schema.Metadata.t(),
           id: non_neg_integer | nil,
           label: String.t() | nil,
           description: String.t() | nil,
@@ -21,7 +22,7 @@ defmodule Glific.Tags.Tag do
           language_id: non_neg_integer | nil,
           language: Language.t() | Ecto.Association.NotLoaded.t() | nil,
           parent_id: non_neg_integer | nil,
-          tags: Tag.t() | Ecto.Association.NotLoaded.t() | nil,
+          parent: Tag.t() | Ecto.Association.NotLoaded.t() | nil,
           inserted_at: :utc_datetime | nil,
           updated_at: :utc_datetime | nil
         }
@@ -35,16 +36,17 @@ defmodule Glific.Tags.Tag do
 
     belongs_to :language, Language
 
-    belongs_to :tags, Tag, foreign_key: :parent_id
+    belongs_to :parent, Tag, foreign_key: :parent_id
+    has_many :child, Tag, foreign_key: :parent_id
 
-    # many_to_many :contacts, Contact, join_through: "contacts_tags", on_replace: :delete
-    # many_to_many :messages, Message, join_through: "messages_tags", on_replace: :delete
+    many_to_many :contacts, Contact, join_through: "contacts_tags", on_replace: :delete
+    many_to_many :messages, Message, join_through: "messages_tags", on_replace: :delete
 
     timestamps()
   end
 
   @doc """
-  Standard changeset pattern we use for all datat types
+  Standard changeset pattern we use for all data types
   """
   @spec changeset(Tag.t(), map()) :: Ecto.Changeset.t()
   def changeset(tag, attrs) do

@@ -1,0 +1,7 @@
+query organizations {
+  organizations {
+    name
+    email
+    provider_number
+  }
+}

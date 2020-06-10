@@ -1,6 +1,6 @@
 defmodule Glific.Tags.MessageTag do
   @moduledoc """
-  A pipe for managing the message tags
+  A file for managing the join table message tags
   """
 
   alias __MODULE__
@@ -11,6 +11,7 @@ defmodule Glific.Tags.MessageTag do
   @required_fields [:message_id, :tag_id]
 
   @type t() :: %__MODULE__{
+          __meta__: Ecto.Schema.Metadata.t(),
           id: non_neg_integer | nil,
           message: Message.t() | Ecto.Association.NotLoaded.t() | nil,
           tag: Tag.t() | Ecto.Association.NotLoaded.t() | nil
@@ -22,7 +23,7 @@ defmodule Glific.Tags.MessageTag do
   end
 
   @doc """
-  Standard changeset pattern we use for all datat types
+  Standard changeset pattern we use for all data types
   """
   @spec changeset(MessageTag.t(), map()) :: Ecto.Changeset.t()
   def changeset(message, attrs) do
