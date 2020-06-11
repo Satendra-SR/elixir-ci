@@ -78,7 +78,7 @@ jobs:
         run: bash <(curl -s https://codecov.io/bash)
 
       - name: Get Docs
-        run: mix deps.get --only docs
+        run: mix deps.get --only test
       
       - name: Generate docs report
         run: mix inch.report
