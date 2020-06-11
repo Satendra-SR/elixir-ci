@@ -81,7 +81,7 @@ jobs:
         run: mix deps.get --only docs
       
       - name: Generate docs report
-        run: MIX_ENV=docs mix inch.report
+        run: mix inch.report
         
 
       
