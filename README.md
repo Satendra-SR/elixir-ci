@@ -4,7 +4,7 @@
 ![](https://github.com/satendra-sr/elixir-ci/workflows/Continuous%20Integration/badge.svg)
 [![codecov.io](http://codecov.io/github/satendra-sr/elixir-ci/coverage.svg?branch=master)](http://codecov.io/github/satendra-sr/elixir-ci?branch=master)
 [![Code coverage badge](https://img.shields.io/codecov/c/github/satendra-sr/elixir-ci/master.svg)](https://codecov.io/gh/satendra-sr/elixir-ci/branch/master)
-
+[![Coverage Status](https://coveralls.io/repos/github/satendra-sr/elixir-ci/badge.svg?branch=master)](https://coveralls.io/github/satendra-sr/elixir-ci?branch=master)
 
 ## Packages Needed
 
