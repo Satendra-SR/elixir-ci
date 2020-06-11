@@ -76,6 +76,12 @@ jobs:
 
       - name: run bash for code coverage
         run: bash <(curl -s https://codecov.io/bash)
+
+      - name: Get Docs
+        run: mix deps.get --only docs
+      
+      - name: Generate docs report
+        run: MIX_ENV=docs mix inch.report
         
 
       
