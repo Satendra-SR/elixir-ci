@@ -25,6 +25,7 @@ jobs:
     env:
       MIX_ENV: test
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CODECOV_TOKEN: "964cad62-86cc-48ad-9c89-a783031a4fd5"
 
     strategy:
       matrix:  # build matrix for the job
@@ -70,5 +71,9 @@ jobs:
 
       - name: Run check
         run: mix check
+      - name: Coveralls for code covarage
+        run: coveralls.json
+        run: bash <(curl -s https://codecov.io/bash)
+        
 
       
