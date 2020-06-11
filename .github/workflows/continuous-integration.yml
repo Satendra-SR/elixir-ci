@@ -73,6 +73,8 @@ jobs:
         run: mix check
       - name: Coveralls for code covarage
         run: coveralls.json
+
+      - name: run bash for code coverage
         run: bash <(curl -s https://codecov.io/bash)
         
 
