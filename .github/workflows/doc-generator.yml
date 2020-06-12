@@ -13,10 +13,13 @@ jobs:
       matrix:  # build matrix for the job
         elixir: [1.10.2]
         otp: [22.2.8]
-        
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-elixir@v1 # See documentation for examples of input parameters
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
       - name: Build docs
         uses: lee-dohm/generate-elixir-docs@v1
       - name: Publish to Pages
