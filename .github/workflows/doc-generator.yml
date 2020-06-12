@@ -9,6 +9,9 @@ jobs:
     name: Generate project documentation
     runs-on: ubuntu-latest
 
+    env:
+      MIX_ENV: test
+
     strategy:
       matrix:  # build matrix for the job
         elixir: [1.10.2]
