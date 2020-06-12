@@ -1,6 +1,8 @@
 # Glific - Two Way Open Source Communication Platform
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![](https://github.com/satendra-sr/elixir-ci/workflows/Continuous%20Integration/badge.svg)
+[![Code coverage badge](https://img.shields.io/codecov/c/github/satendra-sr/elixir-ci/master.svg)](https://codecov.io/gh/satendra-sr/elixir-ci/branch/master)
 
 ## Packages Needed
 
@@ -15,7 +17,7 @@ Install the following packages using your favorite package manager. Links are pr
 
 ## Download code
 
-  * [Download the latest code from GitHub](https://github.com/glific/glific)
+  * [Download the latest code from GitHub](https://github.com/satendra-sr/elixir-ci)
     
 ## Setup
   * Copy the file: `config/dev.secret.exs.txt` to `config/dev.secret.exs` and edit it with your credentials
