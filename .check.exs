@@ -24,7 +24,7 @@
 
     {:mix_format, "mix format"},
     # {:mix_doctor, "mix doctor"},
-    {:dialyzer, "mix dialyzer --format raw", detect: [{:package, :dialyxir}]},
+    # {:dialyzer, "mix dialyzer --format raw", detect: [{:package, :dialyxir}]},
     {:mix_coveralls, "mix coveralls", [{:run_after, [:ex_unit]}, {:env, %{"MIX_ENV" => "test"}}]}
   ]
 ]
