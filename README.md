@@ -7,7 +7,7 @@
 
 ## Packages Needed
 
-Install the following packages using your favorite package manager. Links are provided for some example
+Install the following packages using your favorite package manager. Links are provided for some
 
   * [Install Elixir](https://elixir-lang.org/install.html#distributions)
   * [Install Postgres](https://www.postgresql.org/download/)
