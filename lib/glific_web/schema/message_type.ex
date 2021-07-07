@@ -22,6 +22,10 @@ defmodule GlificWeb.Schema.MessageTypes do
 
     field :provider_status, :message_status_enum
 
+    # expose the date we processed this message since external clients need it
+    field :inserted_at, :datetime
+    field :updated_at, :datetime
+
     field :sender, :contact do
       resolve(dataloader(Repo))
     end
@@ -55,6 +59,12 @@ defmodule GlificWeb.Schema.MessageTypes do
 
     @desc "Match the status"
     field :provider_status, :message_status_enum
+
+    @desc "Match the tags included"
+    field :tags_included, list_of(:id)
+
+    @desc "Match the tags excluded"
+    field :tags_excluded, list_of(:id)
   end
 
   input_object :message_input do
@@ -67,7 +77,6 @@ defmodule GlificWeb.Schema.MessageTypes do
 
     field :sender_id, :id
     field :receiver_id, :id
-    field :contact_id, :id
     field :media_id, :id
   end
 
@@ -92,10 +101,10 @@ defmodule GlificWeb.Schema.MessageTypes do
       resolve(&Resolvers.Messages.create_message/3)
     end
 
-    # field :send_message, :message_result do
-    #   arg(:input, non_null(:message_input))
-    #   resolve(&Resolvers.Messages.send_message/3)
-    # end
+    field :send_message, :message_result do
+      arg(:id, non_null(:id))
+      resolve(&Resolvers.Messages.send_message/3)
+    end
 
     field :update_message, :message_result do
       arg(:id, non_null(:id))

@@ -26,13 +26,13 @@ defmodule Glific.Messages.Message do
   @required_fields [
     :type,
     :flow,
-    :provider_status,
     :sender_id,
     :receiver_id,
     :contact_id
   ]
   @optional_fields [
     :body,
+    :provider_status,
     :provider_message_id,
     :media_id
   ]
@@ -52,7 +52,7 @@ defmodule Glific.Messages.Message do
 
     many_to_many :tags, Tag, join_through: "messages_tags", on_replace: :delete
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc """
@@ -63,5 +63,13 @@ defmodule Glific.Messages.Message do
     message
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+  end
+
+  @doc """
+  Convert message structure to map
+  """
+  @spec to_minimal_map(Message.t()) :: map()
+  def to_minimal_map(message) do
+    Map.take(message, [:id | @required_fields])
   end
 end

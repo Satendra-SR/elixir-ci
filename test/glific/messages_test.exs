@@ -7,6 +7,8 @@ defmodule Glific.MessagesTest do
     Messages.Message
   }
 
+  alias Glific.Fixtures
+
   describe "messages" do
     @sender_attrs %{
       name: "some sender",
@@ -45,7 +47,7 @@ defmodule Glific.MessagesTest do
     defp foreign_key_constraint do
       {:ok, sender} = Contacts.create_contact(@sender_attrs)
       {:ok, receiver} = Contacts.create_contact(@receiver_attrs)
-      %{sender_id: sender.id, receiver_id: receiver.id, contact_id: receiver.id}
+      %{sender_id: sender.id, receiver_id: receiver.id}
     end
 
     def message_fixture(attrs \\ %{}) do
@@ -81,18 +83,58 @@ defmodule Glific.MessagesTest do
 
       {:ok, message} =
         @valid_attrs
-        |> Map.merge(%{sender_id: sender.id, receiver_id: receiver.id, contact_id: receiver.id})
+        |> Map.merge(%{sender_id: sender.id, receiver_id: receiver.id})
         |> Messages.create_message()
 
       assert [message] == Messages.list_messages(%{filter: %{sender: sender.name}})
 
       assert [message] == Messages.list_messages(%{filter: %{receiver: receiver.name}})
 
-      assert [message] == Messages.list_messages(%{filter: %{either: receiver.phone}})
+      assert [message] == Messages.list_messages(%{filter: %{either: sender.phone}})
 
       assert [] == Messages.list_messages(%{filter: %{either: "ABC"}})
       assert [] == Messages.list_messages(%{filter: %{sender: "ABC"}})
       assert [] == Messages.list_messages(%{filter: %{receiver: "ABC"}})
+    end
+
+    test "list_messages/1 with tags included filters" do
+      message_tag = Fixtures.message_tag_fixture()
+      message_tag_2 = Fixtures.message_tag_fixture()
+
+      message = Messages.get_message!(message_tag.message_id)
+      _message_2 = Messages.get_message!(message_tag_2.message_id)
+      _message_3 = message_fixture()
+
+      assert [message] ==
+               Messages.list_messages(%{filter: %{tags_included: [message_tag.tag_id]}})
+
+      # Search for multiple tags
+      message_list =
+        Messages.list_messages(%{
+          filter: %{tags_included: [message_tag.tag_id, message_tag_2.tag_id]}
+        })
+
+      assert length(message_list) == 2
+    end
+
+    test "list_messages/1 with tags excluded filters" do
+      message_tag = Fixtures.message_tag_fixture()
+      message_tag_2 = Fixtures.message_tag_fixture()
+
+      _message = Messages.get_message!(message_tag.message_id)
+      _message_2 = Messages.get_message!(message_tag_2.message_id)
+      _message_3 = message_fixture()
+
+      message_list = Messages.list_messages(%{filter: %{tags_excluded: [message_tag.tag_id]}})
+      assert length(message_list) == 2
+
+      # Search for multiple tags
+      message_list =
+        Messages.list_messages(%{
+          filter: %{tags_excluded: [message_tag.tag_id, message_tag_2.tag_id]}
+        })
+
+      assert length(message_list) == 1
     end
 
     test "get_message!/1 returns the message with given id" do

@@ -11,11 +11,11 @@ defmodule Glific.Repo.Migrations.GlificTables do
 
     tags()
 
-    session_messages()
-
     contacts()
 
     messages_media()
+
+    session_templates()
 
     messages()
 
@@ -46,7 +46,7 @@ defmodule Glific.Repo.Migrations.GlificTables do
       # Is this language being currently used in the sysem
       add :is_active, :boolean, default: true
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:languages, [:label, :locale])
@@ -76,7 +76,7 @@ defmodule Glific.Repo.Migrations.GlificTables do
       # All child tags point to the parent tag, this allows us a to organize tags as needed
       add :parent_id, references(:tags, on_delete: :nilify_all), null: true
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:tags, [:label, :language_id])
@@ -87,10 +87,10 @@ defmodule Glific.Repo.Migrations.GlificTables do
   on a regular basis.
 
   Handle multiple versions of the message for different languages. We will also need to think
-  about incorporating short codes for session messages for easier retrieval by end user
+  about incorporating short codes for session templates for easier retrieval by end user
   """
-  def session_messages do
-    create table(:session_messages) do
+  def session_templates do
+    create table(:session_templates) do
       # The message label
       add :label, :string, null: false
 
@@ -106,19 +106,22 @@ defmodule Glific.Repo.Migrations.GlificTables do
       # Is this the original root message
       add :is_source, :boolean, default: false
 
-      # Is this translation machine-generated
-      add :is_translated, :boolean, default: false
+      # The message shortcode
+      add :shortcode, :string, null: true
 
       # Messages are in a specific language
       add :language_id, references(:languages, on_delete: :restrict), null: false
 
       # All child messages point to the root message, so we can propagate changes downstream
-      add :parent_id, references(:session_messages, on_delete: :nilify_all), null: true
+      add :parent_id, references(:session_templates, on_delete: :nilify_all), null: true
 
-      timestamps()
+      # message media ids
+      add :message_media_id, references(:messages_media, on_delete: :delete_all), null: true
+
+      timestamps(type: :utc_datetime)
     end
 
-    create unique_index(:session_messages, [:label, :language_id])
+    create unique_index(:session_templates, [:label, :language_id])
   end
 
   @doc """
@@ -148,7 +151,7 @@ defmodule Glific.Repo.Migrations.GlificTables do
       add :optin_time, :timestamptz
       add :optout_time, :timestamptz
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:contacts, :phone)
@@ -175,7 +178,7 @@ defmodule Glific.Repo.Migrations.GlificTables do
       # whats app message id
       add :provider_media_id, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
   end
 
@@ -214,7 +217,7 @@ defmodule Glific.Repo.Migrations.GlificTables do
       # message media ids
       add :media_id, references(:messages_media, on_delete: :delete_all), null: true
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create index(:messages, [:sender_id])
@@ -259,7 +262,7 @@ defmodule Glific.Repo.Migrations.GlificTables do
       # The api end point for Provider
       add :api_end_point, :string, null: false
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:providers, :name)
@@ -273,17 +276,19 @@ defmodule Glific.Repo.Migrations.GlificTables do
       add :name, :string, null: false
       add :display_name, :string, null: false
       add :contact_name, :string, null: false
+      add :contact_id, references(:contacts, on_delete: :nothing)
       add :email, :string, null: false
       add :provider, :string
       add :provider_id, references(:providers, on_delete: :nothing), null: false
       add :provider_key, :string, null: false
       add :provider_number, :string, null: false
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:organizations, :name)
     create unique_index(:organizations, :provider_number)
     create unique_index(:organizations, :email)
+    create unique_index(:organizations, :contact_id)
   end
 end
